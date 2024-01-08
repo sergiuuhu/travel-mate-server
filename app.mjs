@@ -1,15 +1,5 @@
 import express from "express";
 import bodyParser from "body-parser";
-import {
-  fetchStory,
-  translate,
-  getAudio,
-  createStory,
-  cronMinute,
-  generateAudio,
-  signIn,
-  userData,
-} from "./extra.mjs";
 
 const app = express();
 
@@ -27,57 +17,10 @@ app.get("/hello", (req, res) => {
   res.send("World");
 });
 
-app.get("/categories", async (req, res) => {
-  res.send({
-    categories
-  });
-});
+app.post("/fetch/:airportCode", async (req, res) => {
+  const { airportCode } = req.params;
 
-app.post("/create", async (req, res) => {
-  const story = await createStory(req.body);
-
-  res.send(story);
-});
-
-app.get("/story/:slug", async (req, res) => {
-  const story = await fetchStory(req.params.slug);
-
-  res.send(story);
-});
-
-app.get("/cron/minute", async (req, res) => {
-  const status = await cronMinute();
-
-  res.send(status);
-});
-
-app.get("/audio/generate/:story/:card/:text", async (req, res) => {
-  const response = await generateAudio(
-    req.params.story,
-    req.params.card,
-    decodeURIComponent(req.params.text)
-  );
-
-  res.send(response);
-});
-
-app.post("/audio", async (req, res) => {
-  const { storySlug, cardNumbers, narratorIsMale, listenerIsMale } = req.body;
-
-  const audioObject = await getAudio(
-    storySlug,
-    cardNumbers,
-    narratorIsMale,
-    listenerIsMale
-  );
-
-  res.send({ audio: audioObject });
-});
-
-app.post("/translate", async (req, res) => {
-  const translations = await translate(req.body.text, req.body.target_lang);
-
-  res.send({ translations });
+  res.send(airportCode);
 });
 
 app.listen(app.get("port"), function () {

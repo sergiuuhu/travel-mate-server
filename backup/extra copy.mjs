@@ -4,22 +4,6 @@ const supabaseUrl = "https://jcwmtyftwfqkpetpuepw.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impjd210eWZ0d2Zxa3BldHB1ZXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTg0ODM4OTgsImV4cCI6MjAxNDA1OTg5OH0.XWMRW9e64tN0EgMslnbscLKRFGUvW2k-vPfNGlmChKs";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// FETCH
-// const { data, error } = await supabase.from("translations").select("translations").eq("slug", slug).eq("target_lang", targetLang);
-
-// const { data, error } = await supabase
-//     .from("stories")
-//     .select(
-//       "title, description, slug, tags, background_image, is_premium, created_at"
-//     )
-//     .contains("tags", [tags])
-//     .lt("available_after", new Date().toISOString())
-//     .order("id", { ascending: false })
-//     .limit(5);
-
-// INSERT
-// const { data, error } =  await supabase.from("audio").insert([newObjectFemale]);
-
 export const createStory = async ({
   image,
   title,
