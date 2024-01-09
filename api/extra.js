@@ -1,8 +1,7 @@
 import 'dotenv/config'
+import axios from 'axios';
+import moment from 'moment';
 import { createClient } from "@supabase/supabase-js";
-
-const axios = require('axios');
-const moment = require('moment');
 
 const supabaseUrl = `https://${process.env.SUPA_ID}.supabase.co`;
 const supabaseKey = process.env.SUPA_KEY;
