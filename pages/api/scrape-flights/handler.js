@@ -5,14 +5,13 @@ export const config = {
     runtime: 'edge',
 };
 
-let airportIndex = 0;
 
 export default async function handler() {
+    const airportIndex = Math.floor(Math.random() * airports.length);
+
     const airportCode = airports[airportIndex]['code'];
 
     const flightsAdded = await letsGo(airportCode);
-
-    airportIndex = airports[airportIndex + 1] ? airportIndex + 1 : 0;
 
     return new Response(
         JSON.stringify({
