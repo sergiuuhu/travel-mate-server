@@ -7,10 +7,7 @@ export const config = {
 
 let airportIndex = 0;
 
-export default async function handler(request) {
-    const urlParams = new URL(request.url).searchParams;
-    const query = Object.fromEntries(urlParams);
-
+export default async function handler() {
     const airportCode = airports[airportIndex]['code'];
 
     const flightsAdded = await letsGo(airportCode);
