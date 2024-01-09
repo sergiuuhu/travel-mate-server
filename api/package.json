@@ -1,0 +1,19 @@
+{
+    "name": "travel-mate-server",
+    "version": "1.0.0",
+    "description": "Express.js project for Travel Mate.",
+    "main": "app.mjs",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app.mjs"
+    },
+    "license": "ISC",
+    "dependencies": {
+        "@supabase/supabase-js": "^2.36.0",
+        "axios": "^1.6.5",
+        "body-parser": "^1.20.2",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "moment": "^2.30.1"
+    }
+}
