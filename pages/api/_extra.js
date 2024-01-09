@@ -33,7 +33,7 @@ export const getFlights = async (params) => {
     }
 };
 
-export const generateDates = (weeks = 6) => {
+export const generateDates = (weeks = 2) => {
     const dates = [];
 
     const today = new Date();
