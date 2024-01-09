@@ -1,5 +1,5 @@
 // import 'dotenv/config'
-import axios from 'axios';
+// import axios from 'axios';
 import moment from 'moment';
 import { createClient } from "@supabase/supabase-js";
 
@@ -18,8 +18,14 @@ export const getFlights = async (params) => {
     const fullUrl = `${url}?${queryParams.toString()}`;
 
     try {
-        const response = await axios.get(fullUrl, { headers });
-        return response.data.data;
+        const response = await fetch(fullUrl, { headers });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.data;
     } catch (error) {
         console.error('Error:', error.message);
 
