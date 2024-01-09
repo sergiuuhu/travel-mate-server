@@ -1,7 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
 
+import { airports } from "./airports.mjs"
+import { letsGo } from "./extra.mjs"
+
 const app = express();
+
+let airportIndex = 0;
 
 app.use(
   bodyParser.urlencoded({ extended: true, limit: "1mb", parameterLimit: 50000 })
@@ -17,10 +22,14 @@ app.get("/hello", (req, res) => {
   res.send("World");
 });
 
-app.post("/fetch/:airportCode", async (req, res) => {
-  const { airportCode } = req.params;
+app.get("/fetch", async (req, res) => {
+  const airportCode = airports[airportIndex]['code'];
 
-  res.send(airportCode);
+  const flightsAdded = await letsGo(airportCode);
+
+  airportIndex = airports[airportIndex + 1] ? airportIndex + 1 : 0;
+
+  res.send(`${flightsAdded} flights added from ${airportCode}.`);
 });
 
 app.listen(app.get("port"), function () {

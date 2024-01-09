@@ -1,7 +1,10 @@
+import 'dotenv/config'
+import axios from 'axios';
+import moment from 'moment';
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://jcwmtyftwfqkpetpuepw.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impjd210eWZ0d2Zxa3BldHB1ZXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTg0ODM4OTgsImV4cCI6MjAxNDA1OTg5OH0.XWMRW9e64tN0EgMslnbscLKRFGUvW2k-vPfNGlmChKs";
+const supabaseUrl = "https://mwwotgllefklynjffxhr.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13d290Z2xsZWZrbHluamZmeGhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQ3MDQzMDcsImV4cCI6MjAyMDI4MDMwN30.lYkjY4Lj4tA_D1iRr5gVY82spkjlpcw3W5iPGxd-m4A";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // FETCH
@@ -20,563 +23,205 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // INSERT
 // const { data, error } =  await supabase.from("audio").insert([newObjectFemale]);
 
-export const createStory = async ({
-  image,
-  title,
-  description,
-  category,
-  script,
-  storyIsPremium,
-}) => {
-  if (!category) throw new Error("Category seems missing.");
-  if (!script) throw new Error("Script seems missing.");
+export const getFlights = async (params) => {
+  const url = 'https://api.tequila.kiwi.com/v2/search';
+  const headers = {
+    'accept': 'application/json',
+    'apikey': process.env.KIWI_API_KEY // Assuming you use an environment variable for the API key
+  };
 
-  const cards = textToCards(script);
+  const queryParams = new URLSearchParams(params);
+  const fullUrl = `${url}?${queryParams.toString()}`;
 
-  if (!title) throw new Error("Title seems missing.");
-  if (!image) throw new Error("Image seems missing.");
-  if (!description) throw new Error("Description seems missing.");
-  if (!category) throw new Error("Category seems missing.");
+  try {
+    const response = await axios.get(fullUrl, { headers });
+    return response.data.data;
+  } catch (error) {
+    console.error('Error:', error.message);
 
-  const slug = slugify(title);
-
-  const check = await fetchStory(slug);
-
-  if (check) {
-    throw new Error("Story already present.");
+    throw error;
   }
-
-  const filename = `${slug}.jpg`;
-
-  const imageRes = await fetch(image);
-  const imageBlob = await imageRes.blob();
-
-  const imageUploaded = await supabase.storage
-    .from("images")
-    .upload(filename, imageBlob, {
-      cacheControl: "3600",
-      contentType: "image/jpeg",
-      upsert: true,
-    });
-
-  const publicUrl = await supabase.storage
-    .from("images")
-    .getPublicUrl(filename);
-
-  const cleanDescription = text.replace(/^\s+|\s+$/g, "");
-
-  const tags = cleanDescription.split("\n").map((o) => slugify(o));
-
-  const storyInserted = await supabase.from("stories").insert([
-    {
-      title,
-      slug,
-      description: cleanDescription,
-      tags,
-      script,
-      cards,
-      background_image: publicUrl.data.publicUrl,
-      is_premium: storyIsPremium,
-      available_after: new Date(new Date().getTime() + 60 * 60 * 1000),
-    },
-  ]);
-
-  const cronUrls = [];
-
-  for (const cardIndex in cards) {
-    const { title, option1, option2, option3 } = cards[cardIndex];
-
-    const baseUrl = `https://www.englishflow.ai/api/audio/generate/${slug}/${parseInt(cardIndex) + 1
-      }`;
-
-    cronUrls.push({ url: `${baseUrl}/${encodeURIComponent(title)}` });
-
-    if (option1)
-      cronUrls.push({ url: `${baseUrl}/${encodeURIComponent(option1)}` });
-    if (option2)
-      cronUrls.push({ url: `${baseUrl}/${encodeURIComponent(option2)}` });
-    if (option3)
-      cronUrls.push({ url: `${baseUrl}/${encodeURIComponent(option3)}` });
-  }
-
-  await supabase.from("cron_links").insert(cronUrls);
-
-  return true;
 };
 
-export const fetchCategory = async (tags, status = "all", page = 0) => {
-  const { data, error } = await supabase
-    .from("stories")
-    .select(
-      "title, description, slug, tags, background_image, is_premium, created_at"
-    )
-    .contains("tags", [tags])
-    .lt("available_after", new Date().toISOString())
-    .order("id", { ascending: false })
-    .limit(5);
-
-  return data;
-};
-
-export const fetchStory = async (slug) => {
-  const { data, error } = await supabase
-    .from("stories")
-    .select(
-      "title, slug, description, background_image, is_premium, cards, created_at"
-    )
-    .eq("slug", slug);
-
-  return data[0];
-  // const cards = data[0]["cards"].slice(page, page + 3);
-
-  // let text = [];
-
-  // for (const card of cards) {
-  //   const { title, option1, option2, option3 } = card;
-
-  //   text = [...text, title, option1, option2, option3];
-  // }
-
-  // const audio = await audio(text);
-
-  // return { text, audio };
-};
-
-export const translate = async (text, targetLang) => {
-  const slug = slugify(text.join("-"));
-
-  const { data, error } = await supabase
-    .from("translations")
-    .select("translations")
-    .eq("slug", slug)
-    .eq("target_lang", targetLang);
-
-  let translations = [];
-
-  if (!data || !data.length) {
-    const rawResponse = await fetch(`https://api-free.deepl.com/v2/translate`, {
-      method: "POST",
-      body: JSON.stringify({
-        source_lang: "EN",
-        text,
-        target_lang: targetLang,
-        formality: "prefer_less",
-        preserve_formatting: false,
-      }),
-      headers: {
-        Authorization: `DeepL-Auth-Key cba7cae4-2451-215b-8a41-02beaed3e9d7:fx`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const response = await rawResponse.json();
-
-    translations = response.translations.map((o) => o.text);
-
-    const { data, error } = await supabase.from("translations").insert([
-      {
-        slug,
-        text,
-        target_lang: targetLang,
-        translations,
-      },
-    ]);
-  } else {
-    translations = data[0].translations;
-  }
-
-  return translations;
-};
-
-export const generateAudio = async (storySlug, cardNumber, text) => {
-  if (text[0] === "-") {
-    // Male option
-    const blobMale = await getVoiceoverBlob(text, false, true);
-    const slugMale = slugify(text);
-    const filenameMale = `${storySlug}/${cardNumber}-male-listener-${slugMale}.mp3`;
-
-    const uploadedMale = await supabase.storage
-      .from("audio")
-      .upload(filenameMale, blobMale, {
-        cacheControl: "3600",
-        contentType: "audio/mpeg",
-        upsert: true,
-      });
-
-    const newObjectMale = {
-      text: text,
-      filename: filenameMale,
-      story_slug: storySlug,
-      card_number: cardNumber,
-      is_narrator: false,
-      is_male: true,
-    };
-
-    const audioDatabaseResponseMale = await supabase
-      .from("audio")
-      .insert([newObjectMale]);
-
-    // Female option
-    const blobFemale = await getVoiceoverBlob(text, false, false);
-    const slugFemale = slugify(text);
-    const filenameFemale = `${storySlug}/${cardNumber}-female-listener-${slugFemale}.mp3`;
-
-    const uploadedFemale = await supabase.storage
-      .from("audio")
-      .upload(filenameFemale, blobFemale, {
-        cacheControl: "3600",
-        contentType: "audio/mpeg",
-        upsert: true,
-      });
-
-    const newObjectFemale = {
-      text: text,
-      filename: filenameFemale,
-      story_slug: storySlug,
-      card_number: cardNumber,
-      is_narrator: false,
-      is_male: false,
-    };
-
-    const audioDatabaseResponseFemale = await supabase
-      .from("audio")
-      .insert([newObjectFemale]);
-  } else {
-    // Male option
-    const blobMale = await getVoiceoverBlob(text, true, true);
-
-    const slugMale = slugify(text);
-
-    const filenameMale = `${storySlug}/${cardNumber}-male-narrator-${slugMale}.mp3`;
-
-    const uploadedMale = await supabase.storage
-      .from("audio")
-      .upload(filenameMale, blobMale, {
-        cacheControl: "3600",
-        contentType: "audio/mpeg",
-        upsert: true,
-      });
-
-    const newObjectMale = {
-      text: text,
-      filename: filenameMale,
-      story_slug: storySlug,
-      card_number: cardNumber,
-      is_narrator: true,
-      is_male: true,
-    };
-
-    const audioDatabaseResponseMale = await supabase
-      .from("audio")
-      .insert([newObjectMale]);
-
-    // Female option
-    const blobFemale = await getVoiceoverBlob(text, true, false);
-
-    const slugFemale = slugify(text);
-
-    const filenameFemale = `${storySlug}/${cardNumber}-female-narrator-${slugFemale}.mp3`;
-
-    const uploadedFemale = await supabase.storage
-      .from("audio")
-      .upload(filenameFemale, blobFemale, {
-        cacheControl: "3600",
-        contentType: "audio/mpeg",
-        upsert: true,
-      });
-
-    const newObjectFemale = {
-      text: text,
-      filename: filenameFemale,
-      story_slug: storySlug,
-      card_number: cardNumber,
-      is_narrator: true,
-      is_male: false,
-    };
-
-    const audioDatabaseResponseFemale = await supabase
-      .from("audio")
-      .insert([newObjectFemale]);
-  }
-
-  return true;
-};
-
-export const getAudio = async (
-  storySlug = "",
-  cardNumbers = [],
-  narratorIsMale = false,
-  listenerIsMale = false
-) => {
-  const { data, error } = await supabase
-    .from("audio")
-    .select("text,filename,is_narrator,is_male")
-    .eq("story_slug", storySlug)
-    .in("card_number", cardNumbers);
-
-  const audioObject = {};
-
-  const audioStorageResponse = await supabase.storage
-    .from("audio")
-    .createSignedUrls(
-      data
-        .filter(
-          (o) =>
-            (o.is_narrator && o.is_male === narratorIsMale) ||
-            (!o.is_narrator && o.is_male === listenerIsMale)
-        )
-        .map(({ filename }) => filename),
-      3600
-    );
-
-  for (const oneSigned of audioStorageResponse.data || []) {
-    const { text } = data.find((o) => o.filename === oneSigned.path);
-
-    audioObject[text] = oneSigned.signedUrl;
-  }
-
-  return audioObject;
-};
-
-// export const downloadPreview = async (
-//   storySlug = "",
-//   cardNumbers = [],
-//   narratorIsMale = false,
-//   listenerIsMale = false
-// ) => {
-//   const { data, error } = await supabase
-//     .from("audio")
-//     .select("text,filename,is_narrator,is_male")
-//     .eq("story_slug", storySlug)
-//     .in("card_number", cardNumbers);
-
-//   const filenamesOrdered = [];
-
-//   for (const cardNumber of cardNumbers) {
-//     const oneAudioNarrator = data.find(
-//       (o) =>
-//         o.card_number === cardNumber &&
-//         o.is_narrator === true &&
-//         o.is_male === narratorIsMale
-//     );
-//     const oneAudioOption = data.find(
-//       (o) =>
-//         o.card_number === cardNumber &&
-//         o.is_narrator === false &&
-//         o.is_male === listenerIsMale
-//     );
-
-//     if (oneAudioNarrator) filenamesOrdered.push(oneAudioNarrator.filename)
-//     if (oneAudioOption) filenamesOrdered.push(oneAudioOption.filename)
-//   }
-
-//   const audioObject = {};
-
-//   const audioStorageResponse = await supabase.storage
-//     .from("audio")
-//     .createSignedUrls(
-//       data
-//         .filter(
-//           (o) =>
-//             (o.is_narrator && o.is_male === narratorIsMale) ||
-//             (!o.is_narrator && o.is_male === listenerIsMale)
-//         )
-//         .map(({ filename }) => filename),
-//       3600
-//     );
-
-//   for (const oneSigned of audioStorageResponse.data || []) {
-//     const { text } = data.find((o) => o.filename === oneSigned.path);
-
-//     audioObject[text] = oneSigned.signedUrl;
-//   }
-
-//   return audioObject;
-// };
-
-export const getVoiceoverBlob = async (text, isNarrator, isMale) => {
-  const elevenLabsApiKey = "562d4bb012a21e9e188e0b67dc8b5eff";
-
-  // narrator voice, Matthew, british, calm, middle aged, male, Yko7PKHZNXotIFUBG7I9
-  // narrator voice, Bella, american, narration, soft, young, female, EXAVITQu4vr4xnSDxMaL
-  // listener voice, Matilda, american, warm, young, female, XrExE9yKIg1WjnnlVkGX
-  // listener voice, Liam, american, narration, young, male, TX3LPaxmHKxFdv7VOQHJ
-
-  let voiceId = isNarrator
-    ? isMale
-      ? "Yko7PKHZNXotIFUBG7I9"
-      : "EXAVITQu4vr4xnSDxMaL"
-    : isMale
-      ? "TX3LPaxmHKxFdv7VOQHJ"
-      : "XrExE9yKIg1WjnnlVkGX";
-
-  const endpoint = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?optimize_streaming_latency=0&output_format=mp3_44100_128`;
-
-  const rawResponse = await fetch(endpoint, {
-    method: "POST",
-    body: JSON.stringify({
-      text,
-      model_id: "eleven_monolingual_v1",
-      voice_settings: {
-        stability: isNarrator ? 0.5 : 0.4,
-        similarity_boost: isNarrator ? 0.6 : 0.4,
-        // style: 0,
-        use_speaker_boost: false,
-      },
-    }),
-    headers: {
-      "xi-api-key": elevenLabsApiKey,
-      "Content-Type": "application/json",
-      accept: "audio/mpeg",
-    },
-  });
-
-  const blob = await rawResponse.blob();
-
-  return blob;
-};
-
-export const signIn = async (email) => {
-  const redirectTo =
-    process.env.NODE_ENV === "production"
-      ? "https://www.englishflow.ai/account"
-      : "http://localhost:3000/account";
-
-  const { data, error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: redirectTo,
-    },
-  });
-
-  return data;
-};
-
-export const userData = async (token) => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser(token);
-
-  return user;
-};
-
-export const cronMinute = async () => {
-  const { data, error } = await supabase
-    .from("cron_links")
-    .select("id,url")
-    .order("id", { ascending: true })
-    .limit(1);
-
-  if (data[0]) {
-    const response = await fetch(data[0].url);
-
-    const { error } = await supabase
-      .from("cron_links")
-      .delete()
-      .eq("id", data[0].id);
-  }
-
-  return true;
-};
-
-export const generateDate = () => {
-  const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-  const day = String(currentDate.getDate()).padStart(2, "0");
-
-  const formattedDate = `${year}-${month}-${day}`;
-
-  return formattedDate;
-};
-
-export const generateUniqueFilename = () => {
-  const currentDate = new Date();
-  const timestamp = currentDate
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d+/, "");
-
-  const randomString = Math.random().toString(36).substring(2, 8); // Generates a random string
-
-  const uniqueFilename = `${timestamp}_${randomString}`;
-
-  return uniqueFilename;
-};
-
-export const slugify = (str = "") => {
-  return String(str.replace(/[^\w\s-]/g, ""))
-    .normalize("NFKD") // split accented characters into their base characters and diacritical marks
-    .replace(/[\u0300-\u036f]/g, "") // remove all the accents, which happen to be all in the \u03xx UNICODE block.
-    .trim() // trim leading or trailing whitespace
-    .toLowerCase() // convert to lowercase
-    .replace(/[^a-z0-9 -]/g, "") // remove non-alphanumeric characters
-    .replace(/\s+/g, "-") // replace spaces with hyphens
-    .replace(/-+/g, "-"); // remove consecutive hyphens
-};
-
-export const textToCards = (text) => {
-  const trimmedOfLeadingAndTrailingNewLines = text.replace(/^\s+|\s+$/g, "");
-
-  const cards = trimmedOfLeadingAndTrailingNewLines.split("\n").map((line) => {
-    let result = { title: line };
-
-    const matches = line.match(/\(([^)]+)\)/);
-
-    if (matches && matches.length > 1) {
-      const optionsText = matches[1];
-
-      const options = optionsText.split("|").map((option) => option.trim());
-
-      result.title = line.replace(matches[0], "").trim();
-
-      options.forEach((option, index) => {
-        result[`option${index + 1}`] = `- ${option}`;
-      });
+export const generateDates = (weeks = 6) => {
+  const dates = [];
+
+  const today = new Date();
+  let current_date = new Date(today);
+  const end_date = new Date(today);
+  end_date.setDate(today.getDate() + weeks * 7); // Adding 6 weeks
+
+  while (current_date < end_date) {
+    if (current_date.getDay() === 6) {  // Friday
+      const saturday = formatDate(current_date);
+      const sunday = formatDate(new Date(current_date.getTime() + 1 * 24 * 60 * 60 * 1000));  // Adding 1 day
+      const dateRange = { 'date_from': saturday, 'date_to': sunday };
+      dates.push(dateRange);
     }
 
-    return result;
-  });
+    if (current_date.getDay() === 5) {  // Friday
+      const friday = formatDate(current_date);
+      const sunday = formatDate(new Date(current_date.getTime() + 2 * 24 * 60 * 60 * 1000));  // Adding 2 days
+      const dateRange = { 'date_from': friday, 'date_to': sunday };
+      dates.push(dateRange);
+    }
 
-  return cards;
-};
+    if (current_date.getDay() === 4) {  // Thursday
+      const thursday = formatDate(current_date);
+      const sunday = formatDate(new Date(current_date.getTime() + 3 * 24 * 60 * 60 * 1000));  // Adding 3 days
+      const dateRange = { 'date_from': thursday, 'date_to': sunday };
+      dates.push(dateRange);
+    }
 
+    current_date.setDate(current_date.getDate() + 1);
+  }
 
-export const history = [
-  {
-    title: "Today",
-    items: [
-      {
-        title: "Maria 👧 x Coffee shop ☕️",
-        description:
-          "Verb: to have to\nAdverbs: often, usually, always, never\nVocabulary: Coffee shop, lifestyle",
-        slug: "maria-and-her-love-for-double-shot-espressos",
-      },
-      {
-        title: "Maria 👧 x Coffee shop ☕️",
-        description:
-          "Verb: to have to\nAdverbs: often, usually, always, never\nVocabulary: Coffee shop, lifestyle",
-        slug: "maria-and-her-love-for-double-shot-espressos",
-      },
-    ],
-  },
-  {
-    title: "Yesterday",
-    items: [
-      {
-        title: "Maria 👧 x Coffee shop ☕️",
-        description:
-          "Verb: to have to\nAdverbs: often, usually, always, never\nVocabulary: Coffee shop, lifestyle",
-        slug: "maria-x-coffee-shop",
-      },
-    ],
-  },
-  {
-    title: "Last week",
-    items: [],
-  },
-  {
-    title: "Last month",
-    items: [],
-  },
-];
+  return dates;
+}
+
+export const generateFlightOptions = (flyFrom, options = {
+  'max_stopovers': 0,
+  'sort': 'price',
+  'limit': 10, // Max is 1000
+  'adults': 1,
+  'max_fly_duration': 3,
+  'price_from': 0,
+  'price_to': 100,
+  'max_stopovers': 0,
+  // 'max_sector_stopovers': 0,
+  'curr': 'EUR',
+  'locale': 'en',
+  'ret_from_diff_city': false,
+  'ret_to_diff_city': false
+
+}) => {
+  // curr: AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN, BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BRL, BSD, BTC, BTN, BWP, BYN, BZD, CAD, CDF, CHF, CLF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK, DJF, DKK, DOP, DZD, EEK, EGP, ERN, ETB, EUR, FJD, FKP, GBP, GEL, GGP, GHS, GIP, GMD, GNF, GTQ, GYD, HKD, HNL, HRK, HTG, HUF, IDR, ILS, IMP, INR, IQD, IRR, ISK, JEP, JMD, JOD, JPY, KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT, LAK, LBP, LKR, LRD, LSL, LTL, LVL, LYD, MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MTL, MUR, MVR, MWK, MXN, MYR, MZN, NAD, NGN, NIO, NOK, NPR, NZD, OMR, PAB, PEN, PGK, PHP, PKR, PLN, PYG, QAR, QUN, RON, RSD, RUB, RWF, SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLL, SOS, SRD, STD, SVC, SYP, SZL, THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS, UAH, UGX, USD, UYU, UZS, VEF, VND, VUV, WST, XAF, XCD, XOF, XPF, YER, ZAR, ZMK, ZMW, ZWL
+  // locale: ae, ag, ar, at, au, be, bg, bh, br, by, ca, ca-fr, ch, cl, cn, co, ct, cz, da, de, dk, ec, ee, el, en, es, fi, fr, gb, gr, hk, hr, hu, id, ie, il, in, is, it, ja, jo, jp, ko, kr, kw, kz, lt, mx, my, nl, no, nz, om, pe, ph, pl, pt, qa, ro, rs, ru, sa, se, sg, sk, sr, sv, th, tr, tw, ua, uk, us, vn, za
+
+  const params = {
+    'fly_from': flyFrom,
+    'fly_to': "",
+    ...options
+  };
+
+  const dates = generateDates();
+  const flightOptions = [];
+
+  for (const dateRange of dates) {
+    const flightOption = {
+      ...params,
+      date_from: dateRange.date_from,
+      date_to: dateRange.date_from,
+      return_from: dateRange.date_to,
+      return_to: dateRange.date_to,
+    };
+    flightOptions.push(flightOption);
+  }
+
+  return flightOptions;
+}
+
+const formatFlightData = (flight) => {
+  const flight1 = flight['route'][0];
+  const flight2 = flight['route'][1];
+
+  const mainObject = {
+    // 'kiwi_id': flight['id'],
+    // 'combination_id': flight['combination_id'],
+    'price_eur': flight['price'],
+    'flight1_city_from': flight1['cityFrom'],
+    'flight1_fly_from': flight1['flyFrom'],
+    'flight1_city_to': flight1['cityTo'],
+    'flight1_fly_to': flight1['flyTo'],
+    'flight1_departure_time': flight1['local_departure'],
+    'flight1_arrival_time': flight1['local_arrival'],
+    'flight1_duration': calculateDuration(flight1['utc_departure'], flight1['utc_arrival']),
+    'flight1_airline': flight1['airline'],
+    'flight2_city_from': flight2['cityFrom'],
+    'flight2_fly_from': flight2['flyFrom'],
+    'flight2_city_to': flight2['cityTo'],
+    'flight2_fly_to': flight2['flyTo'],
+    'flight2_departure_time': flight2['local_departure'],
+    'flight2_arrival_time': flight2['local_arrival'],
+    'flight2_duration': calculateDuration(flight2['utc_departure'], flight2['utc_arrival']),
+    'flight2_airline': flight2['airline'],
+    'availability': flight['availability']['seats'],
+    'booking_link': flight['deep_link']
+    // 'layovers': flight['route'].length - 1
+  };
+
+  return mainObject;
+}
+
+export const getAirlineLogo = (airline) => {
+  return `https://images.kiwi.com/airlines/32x32/${airline}.png?default=airline.png`
+}
+
+export const formatFlightDataList = (flights) => {
+  const formattedData = flights.map(flight => formatFlightData(flight));
+  return formattedData;
+}
+
+export const formatDate = (date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+export const transformTimestamp = (dateString) => {
+  const timestamp = moment(dateString, "YYYY-MM-DDTHH:mm:ss.SSSZ");
+  const formattedTimestamp = timestamp.format('MMM DD, YYYY, d HH:mm');
+  return formattedTimestamp;
+}
+
+export const calculateDuration = (utcDeparture, utcArrival) => {
+  const departureTime = new Date(utcDeparture);
+  const arrivalTime = new Date(utcArrival);
+
+  const durationMillis = arrivalTime - departureTime;
+
+  // Calculate hours and minutes
+  const hours = Math.floor(durationMillis / (1000 * 60 * 60));
+  const minutes = Math.floor((durationMillis % (1000 * 60 * 60)) / (1000 * 60));
+
+  // Format the result
+  const formattedDuration = `${hours}h ${String(minutes).padStart(2, '0')}'`;
+
+  return formattedDuration;
+}
+
+const delay = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const letsGo = async (flyFrom = 'LTN') => {
+  const flightOptions = generateFlightOptions(flyFrom);
+
+  let allFlights = [];
+
+  for (const option of flightOptions) {
+    const flights = await getFlights(option)
+
+    allFlights = [...allFlights, ...flights]
+
+    await delay(1000);
+  }
+
+  const formatted = allFlights.filter(o => o['route'] && o['route'].length === 2).map(o => formatFlightData(o));
+
+  const deletion = await supabase
+    .from('flights')
+    .delete()
+    .eq('flight1_fly_from', flyFrom)
+
+  // console.log("deletion", deletion)
+
+  const creation = await supabase
+    .from('flights')
+    .insert(formatted)
+
+  // console.log("creation", creation)
+
+  return formatted.length;
+}

@@ -1,9 +1,4 @@
-[
-    {
-        "name": "Airport",
-        "code": "IATA airport code",
-        "country": "Country"
-    },
+export const airports = [
     {
         "name": "Tirana Airport",
         "code": "TIA",
