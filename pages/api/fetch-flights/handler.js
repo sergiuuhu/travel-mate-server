@@ -1,5 +1,5 @@
-import { airports } from "./airports.js"
-import { searchFlights } from "./extra.js"
+import { airports } from "../_airports.js"
+import { searchFlights } from "../_extra.js"
 
 export const config = {
     runtime: 'edge',
