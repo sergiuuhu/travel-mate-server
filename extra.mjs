@@ -3,25 +3,9 @@ import axios from 'axios';
 import moment from 'moment';
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://mwwotgllefklynjffxhr.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13d290Z2xsZWZrbHluamZmeGhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQ3MDQzMDcsImV4cCI6MjAyMDI4MDMwN30.lYkjY4Lj4tA_D1iRr5gVY82spkjlpcw3W5iPGxd-m4A";
+const supabaseUrl = `https://${process.env.SUPA_ID}.supabase.co`;
+const supabaseKey = process.env.SUPA_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
-
-// FETCH
-// const { data, error } = await supabase.from("translations").select("translations").eq("slug", slug).eq("target_lang", targetLang);
-
-// const { data, error } = await supabase
-//     .from("stories")
-//     .select(
-//       "title, description, slug, tags, background_image, is_premium, created_at"
-//     )
-//     .contains("tags", [tags])
-//     .lt("available_after", new Date().toISOString())
-//     .order("id", { ascending: false })
-//     .limit(5);
-
-// INSERT
-// const { data, error } =  await supabase.from("audio").insert([newObjectFemale]);
 
 export const getFlights = async (params) => {
   const url = 'https://api.tequila.kiwi.com/v2/search';
@@ -129,16 +113,20 @@ const formatFlightData = (flight) => {
     // 'kiwi_id': flight['id'],
     // 'combination_id': flight['combination_id'],
     'price_eur': flight['price'],
+    // 'flight1_country_from': flight1['countryFrom']['name'],
     'flight1_city_from': flight1['cityFrom'],
     'flight1_fly_from': flight1['flyFrom'],
+    // 'flight1_country_to': flight1['countryTo']['name'],
     'flight1_city_to': flight1['cityTo'],
     'flight1_fly_to': flight1['flyTo'],
     'flight1_departure_time': flight1['local_departure'],
     'flight1_arrival_time': flight1['local_arrival'],
     'flight1_duration': calculateDuration(flight1['utc_departure'], flight1['utc_arrival']),
     'flight1_airline': flight1['airline'],
+    // 'flight2_country_from': flight2['countryFrom']['name'],
     'flight2_city_from': flight2['cityFrom'],
     'flight2_fly_from': flight2['flyFrom'],
+    // 'flight2_country_to': flight2['countryTo']['name'],
     'flight2_city_to': flight2['cityTo'],
     'flight2_fly_to': flight2['flyTo'],
     'flight2_departure_time': flight2['local_departure'],
@@ -193,6 +181,15 @@ export const calculateDuration = (utcDeparture, utcArrival) => {
 
 const delay = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const searchFlights = async (airportCodes) => {
+  const { data, error } = await supabase
+    .from('flights')
+    .select()
+    .in('flight1_fly_from', airportCodes)
+
+  return data;
 }
 
 export const letsGo = async (flyFrom = 'LTN') => {

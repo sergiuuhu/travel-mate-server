@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import { airports } from "./airports.mjs"
-import { letsGo } from "./extra.mjs"
+import { searchFlights, letsGo } from "./extra.mjs"
 
 const app = express();
 
@@ -30,6 +30,14 @@ app.get("/fetch", async (req, res) => {
   airportIndex = airports[airportIndex + 1] ? airportIndex + 1 : 0;
 
   res.send(`${flightsAdded} flights added from ${airportCode}.`);
+});
+
+app.get("/flights/:country", async (req, res) => {
+  const airportCodes = airports.filter(o => o.country === req.params.country).map(o => o.code)
+
+  const flights = await searchFlights(airportCodes);
+
+  res.json(flights);
 });
 
 app.listen(app.get("port"), function () {
