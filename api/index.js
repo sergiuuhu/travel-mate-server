@@ -42,11 +42,4 @@ app.get("/flights/:country", async (req, res) => {
     res.json(flights);
 });
 
-app.listen(app.get("port"), function () {
-    console.log(
-        "Express app travel-mate-server is running on port",
-        app.get("port")
-    );
-});
-
 export default app;
