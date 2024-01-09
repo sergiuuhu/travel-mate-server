@@ -49,4 +49,4 @@ app.listen(app.get("port"), function () {
     );
 });
 
-module.exports = app;
+export default app;
