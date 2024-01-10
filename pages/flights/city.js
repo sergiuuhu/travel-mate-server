@@ -1,0 +1,22 @@
+import React from 'react';
+// import { useRouter } from 'next/router'
+
+export default function City() {
+  // const router = useRouter()
+
+  // const flights = await getData(router.query.city);
+
+  // return <div>{flights.length} flights found.</div>;
+
+  return <></>
+}
+
+// async function getData(city) {
+//   const res = await fetch(`/api/fetch/${city}`, { next: { revalidate: 28800 } });
+
+//   if (!res.ok) {
+//     throw new Error("Failed to fetch data");
+//   }
+
+//   return res.json();
+// }
