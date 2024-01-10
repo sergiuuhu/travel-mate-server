@@ -44,7 +44,7 @@ export const generateDates = (weeks) => {
         // moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
     ]
 
-    const daysFromArray = [5, 6]
+    const daysFromArray = [6]
 
     const dates = []
 
