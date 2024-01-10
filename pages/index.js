@@ -21,9 +21,18 @@ export default function Home({ flights }) {
     return <BrandedOverlay />
   }
 
-  console.log(flights)
-
-  return <div>Home</div>;
+  return (
+    <div className='page'>
+      <div className='page-left'>
+        {flights.map((o, i) => (
+          <div key={i}>{o[0]} ({o[1].length})</div>
+        ))}
+      </div>
+      <div className='page-right'>
+        Right
+      </div>
+    </div>
+  )
 }
 
 export async function getServerSideProps() {
@@ -68,7 +77,7 @@ const fetchFlights = () => new Promise((resolve, reject) => {
           if (!newObj[flight['country_from']]) newObj[flight['country_from']] = []
           newObj[flight['country_from']].push(flight)
         }
-        resolve(newObj);
+        resolve(Object.entries(newObj).sort((a, b) => b[1].length - a[1].length));
       } else {
         reject(new Error(data.error));
       }

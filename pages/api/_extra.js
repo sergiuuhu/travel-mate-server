@@ -216,7 +216,8 @@ export const searchFlights = async (countryCode) => {
         return flight1Passed && flight2Passed;
     }).map(o => ({
         ...o,
-        airlineLogoUrl: getAirlineLogo(o.airline)
+        flight1_airline_logo_url: getAirlineLogo(o.flight1_airline),
+        flight2_airline_logo_url: getAirlineLogo(o.flight2_airline)
     }))
 };
 

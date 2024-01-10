@@ -1,4 +1,6 @@
 import Head from 'next/head';
+import Link from 'next/link';
+import Script from 'next/script'
 
 export default function Layout({ children }) {
   return (
@@ -44,20 +46,42 @@ export default function Layout({ children }) {
         />
         <meta property="twitter:image" content="https://www.citybreak.pro/cover.png" />
 
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-6CCP477D8C"></script>
-        <script type="text/javascript" dangerouslySetInnerHTML={{
-          __html: `window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-6CCP477D8C" />
 
-gtag('config', 'G-6CCP477D8C');`}} />
-        <script type="text/javascript" dangerouslySetInnerHTML={{
-          __html: `(function(c,l,a,r,i,t,y){
-c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "kjuo8wbycs");`}} />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+          function gtag() { dataLayer.push(arguments); }
+          gtag('js', new Date());
+
+          gtag('config', 'G-6CCP477D8C');`}
+        </Script>
+
+        <Script id="clarity-analytics" strategy="afterInteractive">
+          {`(function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+          })(window, document, "clarity", "script", "kjuo8wbycs");`}
+        </Script>
       </Head>
+
+      <div className='page nav'>
+        <div className='page-left'>
+          <Link href="/" title="citybreak.pro" className='logo'>
+            <img
+              width={32}
+              height={32}
+              src="http://localhost:3000/logo.png"
+              alt="citybreak.pro - Find a cheap city break"
+            />
+
+            <span>citybreak.pro</span>
+          </Link>
+        </div>
+        <div className='page-right'>
+
+        </div>
+      </div>
 
       <main>{children}</main>
     </>

@@ -26,6 +26,8 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 h1,
@@ -193,4 +195,42 @@ code {
     -webkit-transform: scale(1);
     transform: scale(1);
   }
+}
+
+.page {
+  width: 100%;
+  max-width: 1180px;
+  display: flex;
+  flex-direction: row;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.page-left {
+  width: 280px;
+}
+
+.page-right {
+  flex: 1
+}
+
+.logo img {
+  height: 32px;
+  width: 32px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.logo span {
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-block;
+  vertical-align: middle;
+  padding: 7px;
+  border-radius: 3px;
+  margin: 0 7px;
+}
+
+.logo span:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
