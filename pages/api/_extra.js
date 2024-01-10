@@ -202,8 +202,8 @@ export const searchFlights = async (country) => {
         const flight1ArrivalEH = moment(o.flight1_arrival_time).format("EH")
         const flight2ArrivalEH = moment(o.flight2_arrival_time).format("EH")
         // E - day of week (1-7) H - Hour (00-23)
-        const flight1Passed = ["600", "601", "602", "603", "604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614"].includes(flight1ArrivalEH)
-        const flight2Passed = ["718", "719", "720", "721", "722", "723"].includes(flight2ArrivalEH)
+        const flight1Passed = ["604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614"].includes(flight1ArrivalEH)
+        const flight2Passed = ["714", "715", "718", "719", "720", "721", "722", "723"].includes(flight2ArrivalEH)
 
         return flight1Passed && flight2Passed;
     })
