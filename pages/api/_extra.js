@@ -2,6 +2,7 @@
 // import axios from 'axios';
 import moment from 'moment';
 import { createClient } from "@supabase/supabase-js";
+import { airports } from "./_airports.js"
 
 const supabaseUrl = `https://${process.env.SUPA_ID}.supabase.co`;
 const supabaseKey = process.env.SUPA_KEY;
@@ -198,8 +199,14 @@ export const searchFlights = async (airportCodes) => {
     return data;
 }
 
-export const letsGo = async (flyFrom = 'LTN', weeks = 1) => {
-    const dates = generateDates(weeks);
+export const letsGo = async () => {
+    const airportIndexRows = await supabase.from('variables').select('value').eq('key', 'airportIndex');
+    const numberOfWeeksRows = await supabase.from('variables').select('value').eq('key', 'numberOfWeeks');
+
+    const airportIndex = parseInt(airportIndexRows.data[0].value);
+    const weeks = parseInt(numberOfWeeksRows.data[0].value);
+
+    const flyFrom = airports[airportIndex]['code'];
 
     const flightOptions = generateFlightOptions(flyFrom, weeks);
 
@@ -215,18 +222,34 @@ export const letsGo = async (flyFrom = 'LTN', weeks = 1) => {
 
     const formatted = allFlights.filter(o => o['route'] && o['route'].length === 2).map(o => formatFlightData(o));
 
+    const dates = generateDates(weeks);
+
+    const dateTo = dates[0]['date_to'];
+    const dayStart = moment(dateTo, "DD/MM/YYYY").subtract(1, 'day').toISOString()
+    const dayEnd = moment(dateTo, "DD/MM/YYYY").add(1, 'day').toISOString()
+
     const deletion = await supabase
         .from('flights')
         .delete()
         .eq('flight1_fly_from', flyFrom)
+        .gt('flight2_arrival_time', dayStart)
+        .lt('flight2_arrival_time', dayEnd);
 
-    // console.log("deletion", deletion)
+    console.log("deletion", deletion, dayStart, dayEnd)
 
     const creation = await supabase
         .from('flights')
         .insert(formatted)
 
     // console.log("creation", creation)
+
+    const newNmberOfWeeks = weeks >= 6 ? 1 : weeks + 1
+    await supabase.from('variables').update({ value: newNmberOfWeeks, updated_at: moment().toISOString() }).eq('key', 'numberOfWeeks')
+
+    if (newNmberOfWeeks === 1) {
+        const newAirportIndex = airports[airportIndex + 1] ? airportIndex + 1 : 0;
+        await supabase.from('variables').update({ value: newAirportIndex, updated_at: moment().toISOString() }).eq('key', 'airportIndex')
+    }
 
     return formatted.length;
 }
