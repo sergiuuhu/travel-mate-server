@@ -43,21 +43,21 @@ export const generateDates = (weeks = 1) => {
     end_date.setDate(today.getDate() + weeks * 7); // Adding 6 weeks
 
     while (current_date < end_date) {
-        if (current_date.getDay() === 6) {  // Friday
+        if (current_date.getDay() === 6) {  // Saturday
             const saturday = formatDate(current_date);
             const sunday = formatDate(new Date(current_date.getTime() + 1 * 24 * 60 * 60 * 1000));  // Adding 1 day
             const dateRange = { 'date_from': saturday, 'date_to': sunday };
             dates.push(dateRange);
         }
 
-        if (current_date.getDay() === 5) {  // Friday
+        if (current_date.getDay() === 5 && 0) {  // Friday
             const friday = formatDate(current_date);
             const sunday = formatDate(new Date(current_date.getTime() + 2 * 24 * 60 * 60 * 1000));  // Adding 2 days
             const dateRange = { 'date_from': friday, 'date_to': sunday };
             dates.push(dateRange);
         }
 
-        if (current_date.getDay() === 4) {  // Thursday
+        if (current_date.getDay() === 4 && 0) {  // Thursday
             const thursday = formatDate(current_date);
             const sunday = formatDate(new Date(current_date.getTime() + 3 * 24 * 60 * 60 * 1000));  // Adding 3 days
             const dateRange = { 'date_from': thursday, 'date_to': sunday };
