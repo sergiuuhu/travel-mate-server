@@ -193,11 +193,11 @@ const delay = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-export const searchFlights = async (country) => {
+export const searchFlights = async (countryCode) => {
     const { data, error } = await supabase
         .from("flights")
         .select()
-        .eq("country_from", country)
+        .eq("country_from_code", countryCode)
         .gt("flight1_departure_time", moment().toISOString())
 
     return data.filter(o => {
