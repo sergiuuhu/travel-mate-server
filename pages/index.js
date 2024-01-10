@@ -38,7 +38,7 @@ const BrandedOverlay = () => {
 };
 
 const getIpInfo = () => new Promise((resolve, reject) => {
-  fetch(`https://ipinfo.io?token=${process.env.NEXT_PUBLIC_IP_INFO_TOKEN}`, { next: { revalidate: 604800 } })
+  fetch(`https://ipinfo.io?token=${process.env.IP_INFO_TOKEN}`, { next: { revalidate: 604800 } })
     .then((response) => response.json())
     .then((data) => {
       if (!data.error) {
