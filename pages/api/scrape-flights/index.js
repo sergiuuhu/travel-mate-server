@@ -5,13 +5,15 @@ export const config = {
     runtime: 'edge',
 };
 
+export default async function handler(request) {
+    const urlParams = new URL(request.url).searchParams;
+    const query = Object.fromEntries(urlParams);
 
-export default async function handler() {
     const airportIndex = Math.floor(Math.random() * airports.length);
 
     const airportCode = airports[airportIndex]['code'];
 
-    const flightsAdded = await letsGo(airportCode);
+    const flightsAdded = await letsGo(airportCode, query.weeks || 1);
 
     return new Response(
         JSON.stringify({

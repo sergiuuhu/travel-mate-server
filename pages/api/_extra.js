@@ -69,7 +69,7 @@ export const generateDates = (weeks = 1) => {
     return dates;
 }
 
-export const generateFlightOptions = (flyFrom, options = {
+export const generateFlightOptions = (flyFrom, weeks = 1, options = {
     'max_stopovers': 0,
     'sort': 'price',
     'limit': 10, // Max is 1000
@@ -94,7 +94,7 @@ export const generateFlightOptions = (flyFrom, options = {
         ...options
     };
 
-    const dates = generateDates();
+    const dates = generateDates(weeks);
     const flightOptions = [];
 
     for (const dateRange of dates) {
@@ -198,8 +198,10 @@ export const searchFlights = async (airportCodes) => {
     return data;
 }
 
-export const letsGo = async (flyFrom = 'LTN') => {
-    const flightOptions = generateFlightOptions(flyFrom);
+export const letsGo = async (flyFrom = 'LTN', weeks = 1) => {
+    const dates = generateDates(weeks);
+
+    const flightOptions = generateFlightOptions(flyFrom, weeks);
 
     let allFlights = [];
 
