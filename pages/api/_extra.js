@@ -22,6 +22,7 @@ export const getFlights = async (params) => {
         const response = await fetch(fullUrl, { headers });
 
         if (!response.ok) {
+            console.log(response)
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
@@ -111,6 +112,8 @@ const formatFlightData = (flight) => {
     const mainObject = {
         // 'kiwi_id': flight['id'],
         // 'combination_id': flight['combination_id'],
+        country_from: flight["countryFrom"]['name'],
+        country_to: flight["countryTo"]['name'],
         price_eur: flight["price"],
         // 'flight1_country_from': flight1['countryFrom']['name'],
         flight1_city_from: flight1["cityFrom"],
@@ -188,13 +191,22 @@ const delay = (ms) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-export const searchFlights = async (airportCodes) => {
+export const searchFlights = async (country) => {
     const { data, error } = await supabase
         .from("flights")
         .select()
-        .in("flight1_fly_from", airportCodes);
+        .eq("country_from", country)
+        .gt("flight1_departure_time", moment().toISOString())
 
-    return data;
+    return data.filter(o => {
+        const flight1ArrivalEH = moment(o.flight1_arrival_time).format("EH")
+        const flight2ArrivalEH = moment(o.flight2_arrival_time).format("EH")
+        // E - day of week (1-7) H - Hour (00-23)
+        const flight1Passed = ["605", "606", "607", "608", "609", "610", "611", "612"].includes(flight1ArrivalEH)
+        const flight2Passed = ["718", "719", "720", "721", "722", "723"].includes(flight2ArrivalEH)
+
+        return flight1Passed && flight2Passed;
+    })
 };
 
 export const letsGo = async () => {
@@ -221,7 +233,7 @@ export const letsGo = async () => {
 
         allFlights = [...allFlights, ...flights];
 
-        await delay(1000);
+        await delay(Math.floor(Math.random() * (1600 - 800 + 1)) + 800); // random number between 800 and 1600
     }
 
     const formatted = allFlights

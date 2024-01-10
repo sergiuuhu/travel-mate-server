@@ -1,4 +1,3 @@
-import { airports } from "../_airports.js"
 import { searchFlights } from "../_extra.js"
 
 export const config = {
@@ -9,9 +8,7 @@ export default async function handler(request) {
     const urlParams = new URL(request.url).searchParams;
     const query = Object.fromEntries(urlParams);
 
-    const airportCodes = airports.filter(o => o.country === query.country).map(o => o.code)
-
-    const flights = await searchFlights(airportCodes);
+    const flights = await searchFlights(query.country);
 
     return new Response(
         JSON.stringify(flights),
