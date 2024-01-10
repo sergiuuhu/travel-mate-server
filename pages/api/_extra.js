@@ -243,7 +243,7 @@ export const letsGo = async () => {
 
     // console.log("creation", creation)
 
-    const newNmberOfWeeks = weeks >= 6 ? 1 : weeks + 1
+    const newNmberOfWeeks = weeks >= 8 ? 1 : weeks + 1
     await supabase.from('variables').update({ value: newNmberOfWeeks, updated_at: moment().toISOString() }).eq('key', 'numberOfWeeks')
 
     if (newNmberOfWeeks === 1) {
