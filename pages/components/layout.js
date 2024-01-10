@@ -23,7 +23,7 @@ export default function Layout({ children }) {
         <meta name="title" content="citybreak.pro - Find a cheap city break" />
         <meta
           name="description"
-          content=""
+          content="Short city breaks for under $100. Arrive Saturday morning & back Sunday evening. Updated daily."
         />
 
         <meta property="og:type" content="website" />
@@ -31,7 +31,7 @@ export default function Layout({ children }) {
         <meta property="og:title" content="citybreak.pro - Find a cheap city break" />
         <meta
           property="og:description"
-          content=""
+          content="Short city breaks for under $100. Arrive Saturday morning & back Sunday evening. Updated daily."
         />
         <meta property="og:image" content="https://www.citybreak.pro/cover.png" />
 
@@ -40,7 +40,7 @@ export default function Layout({ children }) {
         <meta property="twitter:title" content="citybreak.pro - Find a cheap city break" />
         <meta
           property="twitter:description"
-          content=""
+          content="Short city breaks for under $100. Arrive Saturday morning & back Sunday evening. Updated daily."
         />
         <meta property="twitter:image" content="https://www.citybreak.pro/cover.png" />
       </Head>
