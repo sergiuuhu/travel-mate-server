@@ -194,11 +194,15 @@ const delay = (ms) => {
 };
 
 export const searchFlights = async (countryCode) => {
-    const { data, error } = await supabase
-        .from("flights")
-        .select()
-        .eq("country_from_code", countryCode)
-        .gt("flight1_departure_time", moment().toISOString())
+    let result;
+
+    if (countryCode) {
+        result = await supabase.from("flights").select().eq("country_from_code", countryCode).gt("flight1_departure_time", moment().toISOString())
+    } else {
+        result = await supabase.from("flights").select().gt("flight1_departure_time", moment().toISOString())
+    }
+
+    const data = result.data
 
     return data.filter(o => {
         const flight1ArrivalEH = moment(o.flight1_arrival_time).format("EH")
