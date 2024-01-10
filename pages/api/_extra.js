@@ -204,6 +204,8 @@ export const searchFlights = async (countryCode) => {
 
     const data = result.data
 
+    console.log(`${data.length} flights found.`);
+
     return data.filter(o => {
         const flight1ArrivalEH = moment(o.flight1_arrival_time).format("EH")
         const flight2ArrivalEH = moment(o.flight2_arrival_time).format("EH")
