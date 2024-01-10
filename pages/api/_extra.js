@@ -39,12 +39,12 @@ export const generateDates = (weeks) => {
     const weekStart = moment().add(weeks, 'weeks').startOf('week').toISOString();
 
     const datesToArray = [
-        moment(weekStart).add(6, 'days').format('DD/MM/YYYY'),
+        // moment(weekStart).add(6, 'days').format('DD/MM/YYYY'),
         moment(weekStart).add(7, 'days').format('DD/MM/YYYY'),
-        moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
+        // moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
     ]
 
-    const daysFromArray = [3, 4, 5, 6]
+    const daysFromArray = [5, 6]
 
     const dates = []
 
