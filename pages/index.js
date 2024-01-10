@@ -1,27 +1,35 @@
 import React from 'react';
 import useLocalStorage from './utils/useLocalStorage';
 
-export default function Home({ flights, ipInfo }) {
+export default function Home({ flights }) {
   const [isReady, setIsReady] = React.useState(false);
+  const [ipInfo, setIpInfo] = useLocalStorage('ipInfo', {});
 
   React.useEffect(() => {
     setTimeout(() => setIsReady(true), 1250);
   }, []);
 
+  React.useEffect(() => {
+    if (isReady && (!ipInfo || !Object.keys(ipInfo).length)) {
+      getIpInfo()
+        .then((ipInfo) => setIpInfo(ipInfo))
+        .catch((error) => console.error(error));
+    }
+  }, [isReady, ipInfo]);
+
   if (!isReady) {
     return <BrandedOverlay />
   }
 
-  console.log(flights, ipInfo)
+  console.log(flights)
 
   return <div>Home</div>;
 }
 
 export async function getServerSideProps() {
   const flights = await fetchFlights()
-  const ipInfo = await getIpInfo()
 
-  return { props: { flights, ipInfo } }
+  return { props: { flights } }
 }
 
 const BrandedOverlay = () => {
@@ -38,7 +46,7 @@ const BrandedOverlay = () => {
 };
 
 const getIpInfo = () => new Promise((resolve, reject) => {
-  fetch(`https://ipinfo.io?token=${process.env.IP_INFO_TOKEN}`, { next: { revalidate: 604800 } })
+  fetch(`https://ipinfo.io?token=${process.env.NEXT_PUBLIC_IP_INFO_TOKEN}`)
     .then((response) => response.json())
     .then((data) => {
       if (!data.error) {
@@ -51,7 +59,7 @@ const getIpInfo = () => new Promise((resolve, reject) => {
 });
 
 const fetchFlights = () => new Promise((resolve, reject) => {
-  fetch(`${process.env.PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 28800 } })
+  fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 28800 } })
     .then((response) => response.json())
     .then((data) => {
       if (!data.error) {
