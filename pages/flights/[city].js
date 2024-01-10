@@ -1,7 +1,10 @@
 import React from 'react';
+import { useRouter } from 'next/router'
 
-export default async function City({ params }) {
-  const flights = await getData(params.city);
+export default async function City() {
+  const router = useRouter()
+
+  const flights = await getData(router.query.city);
 
   return <div>{flights.length} flights found.</div>;
 }
