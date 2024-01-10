@@ -71,7 +71,7 @@ export default function Layout({ children }) {
             <img
               width={32}
               height={32}
-              src="http://localhost:3000/logo.png"
+              src="/logo.png"
               alt="citybreak.pro - Find a cheap city break"
             />
 
