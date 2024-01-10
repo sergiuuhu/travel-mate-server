@@ -11,23 +11,41 @@ export default function Home() {
 
   React.useEffect(() => {
     if (isReady && (!ipInfo || !Object.keys(ipInfo).length)) {
-      getIpInfo();
+      getIpInfo()
+        .then((ipInfo) => setIpInfo(ipInfo))
+        .catch((error) => console.error(error));
     }
-
-    console.log(ipInfo)
   }, [isReady, ipInfo]);
 
-
-  const getIpInfo = async () => {
-    fetch(`https://ipinfo.io?token=${process.env.NEXT_PUBLIC_IP_INFO_TOKEN}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (!data.error) {
-          setIpInfo(data);
-        }
-      })
-      .catch((err) => console.log(err));
-  };
+  if (!isReady) {
+    return <BrandedOverlay />
+  }
 
   return <div>Home</div>;
 }
+
+const BrandedOverlay = () => {
+  return (
+    <div className="branded-overlay">
+      <img
+        src="/logo.png"
+        width={80}
+        height={80}
+        alt="citybreak.pro - Find a cheap city break"
+      />
+    </div>
+  );
+};
+
+const getIpInfo = () => new Promise((resolve, reject) => {
+  fetch(`https://ipinfo.io?token=${process.env.NEXT_PUBLIC_IP_INFO_TOKEN}`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (!data.error) {
+        resolve(data);
+      } else {
+        reject(new Error(data.error));
+      }
+    })
+    .catch((err) => reject(err));
+});
