@@ -51,7 +51,7 @@ const getIpInfo = () => new Promise((resolve, reject) => {
 });
 
 const fetchFlights = () => new Promise((resolve, reject) => {
-  fetch(`http://localhost:3000//api/fetch-flights`, { next: { revalidate: 28800 } })
+  fetch(`${process.env.PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 28800 } })
     .then((response) => response.json())
     .then((data) => {
       if (!data.error) {
