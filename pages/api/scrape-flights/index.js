@@ -8,9 +8,7 @@ export default async function handler() {
     const flightsAdded = await letsGo();
 
     return new Response(
-        JSON.stringify({
-            message: `${flightsAdded} flights added.`
-        }),
+        JSON.stringify(flightsAdded),
         {
             status: 200,
             headers: {

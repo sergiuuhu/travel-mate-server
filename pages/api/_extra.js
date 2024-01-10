@@ -276,5 +276,5 @@ export const letsGo = async () => {
             .eq("key", "airportIndex");
     }
 
-    return formatted.length;
+    return { flyFrom, flightsAdded: formatted.length };
 };
