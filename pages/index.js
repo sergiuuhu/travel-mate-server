@@ -6,7 +6,7 @@ export default function Home() {
   const [ipInfo, setIpInfo] = useLocalStorage('ipInfo', {});
 
   React.useEffect(() => {
-    setTimeout(() => setIsReady(true), 1400);
+    setTimeout(() => setIsReady(true), 1250);
   }, []);
 
   React.useEffect(() => {
