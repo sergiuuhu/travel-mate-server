@@ -263,7 +263,7 @@ export const letsGo = async () => {
     const dayStart = moment(dates[0]["date_to"], "DD/MM/YYYY")
         .subtract(1, "day")
         .toISOString();
-    const dayEnd = moment(dates[1]["date_to"], "DD/MM/YYYY").add(1, "day").toISOString();
+    const dayEnd = moment(dates[0]["date_to"], "DD/MM/YYYY").add(1, "day").toISOString();
 
     const deletion = await supabase
         .from("flights")
