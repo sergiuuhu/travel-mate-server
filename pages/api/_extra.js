@@ -216,8 +216,8 @@ export const searchFlights = async (countryCode) => {
             "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620"
         ].includes(flight1ArrivalEH)
         const flight2Passed = [
-            "720", "721", "722", "723",
-            "120", "121", "122", "123"
+            "718", "719", "720", "721", "722", "723",
+            "118", "119", "120", "121", "122", "123"
         ].includes(flight2ArrivalEH)
 
         return flight2Passed;
