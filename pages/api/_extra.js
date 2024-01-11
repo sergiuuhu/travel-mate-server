@@ -45,7 +45,7 @@ export const generateDates = (weeks) => {
         // moment(weekStart).add(9, 'days').format('DD/MM/YYYY'),
     ]
 
-    const daysFromArray = [4, 5, 6]
+    const daysFromArray = [5, 6]
 
     const dates = []
 
@@ -212,14 +212,12 @@ export const searchFlights = async (countryCode) => {
         const flight2ArrivalEH = moment(o.flight2_arrival_time).format("EH")
         // E - day of week (1-7) H - Hour (00-23)
         const flight1Passed = [
-            "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "418", "419", "420",
             "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519", "520",
             "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620"
         ].includes(flight1ArrivalEH)
         const flight2Passed = [
             "720", "721", "722", "723",
-            "120", "121", "122", "123",
-            "220", "221", "222", "223",
+            "120", "121", "122", "123"
         ].includes(flight2ArrivalEH)
 
         return flight2Passed;
