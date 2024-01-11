@@ -41,8 +41,8 @@ export const generateDates = (weeks) => {
     const datesToArray = [
         // moment(weekStart).add(6, 'days').format('DD/MM/YYYY'),
         moment(weekStart).add(7, 'days').format('DD/MM/YYYY'),
-        moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
-        moment(weekStart).add(9, 'days').format('DD/MM/YYYY'),
+        // moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
+        // moment(weekStart).add(9, 'days').format('DD/MM/YYYY'),
     ]
 
     const daysFromArray = [4, 5, 6]
@@ -67,7 +67,7 @@ export const generateFlightOptions = (
     options = {
         max_stopovers: 0,
         sort: "price",
-        limit: 10, // Max is 1000
+        limit: 1000, // Max is 1000
         adults: 1,
         max_fly_duration: 3,
         price_from: 0,
