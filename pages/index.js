@@ -27,7 +27,7 @@ export default function Home({ flights }) {
     <div className='page'>
       <div className='page-left'>
         {flights.map((o, i) => (
-          <div key={i}>{o[0]} ({o[1].length})</div>
+          <div key={i}>{o[0]} ({o[1]})</div>
         ))}
       </div>
       <div className='page-right'>
@@ -79,7 +79,7 @@ const fetchFlights = () => new Promise((resolve, reject) => {
           if (!newObj[flight['country_from']]) newObj[flight['country_from']] = []
           newObj[flight['country_from']].push(flight)
         }
-        resolve(Object.entries(newObj).sort((a, b) => b[1].length - a[1].length));
+        resolve(Object.entries(newObj).sort((a, b) => b[1].length - a[1].length).map(o => ({ 0: o[0], 1: o[1].length })));
       } else {
         reject(new Error(data.error));
       }
