@@ -35,25 +35,16 @@ export const getFlights = async (params) => {
     }
 };
 
-export const generateDates = (weeks) => {
+export const generateDates = (weeks, daysFromArray = [6], datesToArray = [7]) => {
     const weekStart = moment().add(weeks, 'weeks').startOf('week').toISOString();
-
-    const datesToArray = [
-        // moment(weekStart).add(6, 'days').format('DD/MM/YYYY'),
-        moment(weekStart).add(7, 'days').format('DD/MM/YYYY'),
-        // moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
-        // moment(weekStart).add(9, 'days').format('DD/MM/YYYY'),
-    ]
-
-    const daysFromArray = [6]
 
     const dates = []
 
-    for (const days of daysFromArray) {
-        for (const date_to of datesToArray) {
+    for (const daysFrom of daysFromArray) {
+        for (const daysTo of datesToArray) {
             dates.push({
-                date_from: moment(weekStart).add(days, 'days').format("DD/MM/YYYY"),
-                date_to
+                date_from: moment(weekStart).add(daysFrom, 'days').format("DD/MM/YYYY"),
+                date_to: moment(weekStart).add(daysTo, 'days').format('DD/MM/YYYY')
             })
         }
     }
@@ -64,6 +55,8 @@ export const generateDates = (weeks) => {
 export const generateFlightOptions = (
     flyFrom,
     weeks = 1,
+    dayFrom = 6,
+    dayTo = 7,
     options = {
         max_stopovers: 0,
         sort: "price",
@@ -88,7 +81,7 @@ export const generateFlightOptions = (
         ...options,
     };
 
-    const dates = generateDates(weeks);
+    const dates = generateDates(weeks, [dayFrom], [dayTo]);
     const flightOptions = [];
 
     for (const dateRange of dates) {
@@ -227,7 +220,7 @@ export const searchFlights = async (countryCode) => {
     }))
 };
 
-export const letsGo = async () => {
+export const letsGo = async (dayFrom = 6, dayTo = 7) => {
     const airportIndexRows = await supabase
         .from("variables")
         .select("value")
@@ -242,7 +235,7 @@ export const letsGo = async () => {
 
     const flyFrom = airports[airportIndex]["code"];
 
-    const flightOptions = generateFlightOptions(flyFrom, weeks);
+    const flightOptions = generateFlightOptions(flyFrom, weeks, dayFrom, dayTo);
 
     let allFlights = [];
 
@@ -254,23 +247,27 @@ export const letsGo = async () => {
         await delay(Math.floor(Math.random() * (1600 - 800 + 1)) + 800); // random number between 800 and 1600
     }
 
+    const dates = generateDates(weeks, [dayFrom], [dayTo]);
+
+    const date_from = dates[0]["date_from"];
+    const date_to = dates[0]["date_to"];
+
     const formatted = allFlights
         .filter((o) => o["route"] && o["route"].length === 2)
-        .map((o) => formatFlightData(o));
+        .map((o) => ({
+            ...formatFlightData(o),
+            date_from,
+            date_to,
+        }));
 
-    const dates = generateDates(weeks);
 
-    const dayStart = moment(dates[0]["date_to"], "DD/MM/YYYY")
-        .subtract(1, "day")
-        .toISOString();
-    const dayEnd = moment(dates[0]["date_to"], "DD/MM/YYYY").add(1, "day").toISOString();
 
     const deletion = await supabase
         .from("flights")
         .delete()
         .eq("flight1_fly_from", flyFrom)
-        .gt("flight2_arrival_time", dayStart)
-        .lt("flight2_arrival_time", dayEnd);
+        .eq("date_from", date_from)
+        .eq("date_to", date_to);
 
     // console.log("deletion", deletion, dayStart, dayEnd);
 
