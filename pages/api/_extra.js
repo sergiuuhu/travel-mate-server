@@ -41,8 +41,8 @@ export const generateDates = (weeks) => {
     const datesToArray = [
         // moment(weekStart).add(6, 'days').format('DD/MM/YYYY'),
         moment(weekStart).add(7, 'days').format('DD/MM/YYYY'),
-        // moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
-        // moment(weekStart).add(9, 'days').format('DD/MM/YYYY'),
+        moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
+        moment(weekStart).add(9, 'days').format('DD/MM/YYYY'),
     ]
 
     const daysFromArray = [4, 5, 6]
@@ -266,7 +266,7 @@ export const letsGo = async () => {
     const dayStart = moment(dates[0]["date_to"], "DD/MM/YYYY")
         .subtract(1, "day")
         .toISOString();
-    const dayEnd = moment(dates[0]["date_to"], "DD/MM/YYYY").add(1, "day").toISOString();
+    const dayEnd = moment(dates[2]["date_to"], "DD/MM/YYYY").add(1, "day").toISOString();
 
     const deletion = await supabase
         .from("flights")
