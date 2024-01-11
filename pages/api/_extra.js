@@ -221,14 +221,17 @@ export const searchFlights = async (countryCode) => {
 };
 
 export const letsGo = async (dayFrom = 6, dayTo = 7) => {
+    const airportIndexKey = `airportIndex${dayFrom}${dayTo}`;
+    const numberOfWeeksKey = `numberOfWeeks${dayFrom}${dayTo}`;
+
     const airportIndexRows = await supabase
         .from("variables")
         .select("value")
-        .eq("key", "airportIndex");
+        .eq("key", airportIndexKey);
     const numberOfWeeksRows = await supabase
         .from("variables")
         .select("value")
-        .eq("key", "numberOfWeeks");
+        .eq("key", numberOfWeeksKey);
 
     const airportIndex = parseInt(airportIndexRows.data[0].value);
     const weeks = parseInt(numberOfWeeksRows.data[0].value);
@@ -279,14 +282,14 @@ export const letsGo = async (dayFrom = 6, dayTo = 7) => {
     await supabase
         .from("variables")
         .update({ value: newNmberOfWeeks, updated_at: moment().toISOString() })
-        .eq("key", "numberOfWeeks");
+        .eq("key", numberOfWeeksKey);
 
     if (newNmberOfWeeks === 1) {
         const newAirportIndex = airports[airportIndex + 1] ? airportIndex + 1 : 0;
         await supabase
             .from("variables")
             .update({ value: newAirportIndex, updated_at: moment().toISOString() })
-            .eq("key", "airportIndex");
+            .eq("key", airportIndexKey);
     }
 
     return { flyFrom, flightsAdded: formatted.length };
