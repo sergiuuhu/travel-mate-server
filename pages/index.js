@@ -7,6 +7,8 @@ export default function Home({ flights }) {
 
   React.useEffect(() => {
     setTimeout(() => setIsReady(true), 1250);
+
+    // new Sticksy('.js-sticky-widget');
   }, []);
 
   React.useEffect(() => {
@@ -68,7 +70,7 @@ const getIpInfo = () => new Promise((resolve, reject) => {
 });
 
 const fetchFlights = () => new Promise((resolve, reject) => {
-  fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 28800 } })
+  fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 3600 } })
     .then((response) => response.json())
     .then((data) => {
       if (!data.error) {

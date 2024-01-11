@@ -41,10 +41,11 @@ export const generateDates = (weeks) => {
     const datesToArray = [
         // moment(weekStart).add(6, 'days').format('DD/MM/YYYY'),
         moment(weekStart).add(7, 'days').format('DD/MM/YYYY'),
-        // moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
+        moment(weekStart).add(8, 'days').format('DD/MM/YYYY'),
+        moment(weekStart).add(9, 'days').format('DD/MM/YYYY'),
     ]
 
-    const daysFromArray = [5, 6]
+    const daysFromArray = [4, 5, 6]
 
     const dates = []
 
@@ -210,8 +211,16 @@ export const searchFlights = async (countryCode) => {
         const flight1ArrivalEH = moment(o.flight1_arrival_time).format("EH")
         const flight2ArrivalEH = moment(o.flight2_arrival_time).format("EH")
         // E - day of week (1-7) H - Hour (00-23)
-        const flight1Passed = ["604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620"].includes(flight1ArrivalEH)
-        const flight2Passed = ["716", "717", "718", "719", "720", "721", "722", "723"].includes(flight2ArrivalEH)
+        const flight1Passed = [
+            "404", "405", "406", "407", "408", "409", "410", "411", "412", "413", "414", "415", "416", "417", "418", "419", "420",
+            "504", "505", "506", "507", "508", "509", "510", "511", "512", "513", "514", "515", "516", "517", "518", "519", "520",
+            "604", "605", "606", "607", "608", "609", "610", "611", "612", "613", "614", "615", "616", "617", "618", "619", "620"
+        ].includes(flight1ArrivalEH)
+        const flight2Passed = [
+            "714", "715", "716", "717", "718", "719", "720", "721", "722", "723",
+            "114", "115", "116", "117", "118", "119", "120", "121", "122", "123",
+            "214", "215", "216", "217", "218", "219", "220", "221", "222", "223",
+        ].includes(flight2ArrivalEH)
 
         return flight1Passed && flight2Passed;
     }).map(o => ({
