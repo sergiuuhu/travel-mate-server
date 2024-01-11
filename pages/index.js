@@ -70,7 +70,7 @@ const getIpInfo = () => new Promise((resolve, reject) => {
 });
 
 const fetchFlights = () => new Promise((resolve, reject) => {
-  fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 3600 } })
+  fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 60 } })
     .then((response) => response.json())
     .then((data) => {
       if (!data.error) {

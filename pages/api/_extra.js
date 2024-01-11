@@ -72,7 +72,6 @@ export const generateFlightOptions = (
         max_fly_duration: 3,
         price_from: 0,
         price_to: 199,
-        max_stopovers: 0,
         // 'max_sector_stopovers': 0,
         curr: "EUR",
         locale: "en",
