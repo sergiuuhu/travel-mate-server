@@ -3,14 +3,13 @@ import { getSupabase } from "../_extra";
 
 const supabase = getSupabase();
 
-const _search = async (countryCode) => {
-    let result;
-
-    if (countryCode) {
-        result = await supabase.from("flights").select().eq("country_from_code", countryCode).gt("flight1_departure_time", moment().toISOString())
-    } else {
-        result = await supabase.from("flights").select().gt("flight1_departure_time", moment().toISOString())
-    }
+const _search = async (countryCode, cityName, priceFrom, priceTo) => {
+    const result = await supabase.from("flights")
+        .select()
+        .eq("country_from_code", countryCode)
+        .gte("price_eur", priceFrom)
+        .lte("price_eur", priceTo)
+        .gt("flight1_departure_time", moment().add(1, 'day').startOf('day').toISOString())
 
     const data = result.data
 

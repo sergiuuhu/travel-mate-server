@@ -4,7 +4,7 @@ import countries from '../utils/countries';
 
 export default function Country({ flights, country }) {
 
-  return <></>
+  return <>✈️ Fri 09:05 | 🏠 Sat 20:00</>
 }
 
 export async function getServerSideProps(context) {
