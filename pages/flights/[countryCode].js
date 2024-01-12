@@ -1,6 +1,5 @@
 import React from 'react';
-import { useRouter } from 'next/router'
-import countries from '../utils/countries';
+import countries from '../../utils/countries';
 
 export default function Country({ flights, country }) {
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import useLocalStorage from './utils/useLocalStorage';
+import useLocalStorage from '../utils/useLocalStorage';
 
 export default function Home({ flights }) {
   const [isReady, setIsReady] = React.useState(false);
