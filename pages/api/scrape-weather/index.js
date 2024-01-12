@@ -32,10 +32,23 @@ export default async function handler(request) {
 
         const monthlyLink = $('a.subnav-item:nth-of-type(6)').attr('href');
 
-        response = await fetch(`https://www.accuweather.com${monthlyLink}`);
+        const currentMonthLink = `https://www.accuweather.com${monthlyLink}`;
+
+        response = await fetch(currentMonthLink);
         html = await response.text();
 
         $ = cheerio.load(html);
+
+        const otherLinks = [currentMonthLink]
+        $('.more-cta-links a').each((i, o) => {
+            const href = $(o).attr('href');
+
+            if (href.includes("?year")) {
+                otherLinks.push(`https://www.accuweather.com${href}`)
+            }
+        })
+
+        console.log(otherLinks)
 
         const location = $('.header-loc').text().trim().split(',')[0];
         const month = $('.map-dropdown:nth-of-type(1) h2').text().trim();
