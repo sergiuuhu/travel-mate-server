@@ -12,14 +12,30 @@ export const config = {
 export default async function handler(request) {
     try {
         const urlParams = new URL(request.url).searchParams;
-        const query = Object.fromEntries(urlParams);
+        const { query } = Object.fromEntries(urlParams);
 
         // Fetch HTML content from the web page using fetch
-        const response = await fetch(query.url);
-        const html = await response.text();
+        let response = await fetch(`https://www.accuweather.com/en/search-locations?query=${query}`);
+        let html = await response.text();
 
         // Extract data using cheerio
-        const $ = cheerio.load(html);
+        let $ = cheerio.load(html);
+
+        const link = $('.locations-list a:first').attr('href');
+
+
+        response = await fetch(`https://www.accuweather.com${link}`);
+        response = await fetch(response.url);
+        html = await response.text();
+
+        $ = cheerio.load(html);
+
+        const monthlyLink = $('a.subnav-item:nth-of-type(6)').attr('href');
+
+        response = await fetch(`https://www.accuweather.com${monthlyLink}`);
+        html = await response.text();
+
+        $ = cheerio.load(html);
 
         const location = $('.header-loc').text().trim().split(',')[0];
         const month = $('.map-dropdown:nth-of-type(1) h2').text().trim();
@@ -89,7 +105,7 @@ export default async function handler(request) {
             },
         );
     } catch (error) {
-        console.error('Error:', error.message);
+        console.error('Error:', error.message, error);
 
         return new Response(
             "Something went wrong.",
