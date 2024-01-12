@@ -65,21 +65,23 @@ export default function Layout({ children }) {
         </Script>
       </Head>
 
-      <div className='page nav'>
-        <div className='page-left'>
-          <Link href="/" title="citybreak.pro" className='logo'>
-            <img
-              width={32}
-              height={32}
-              src="/logo.png"
-              alt="citybreak.pro - Find a cheap city break"
-            />
+      <div className='nav'>
+        <div className='page'>
+          <div className='page-left'>
+            <Link href="/" title="citybreak.pro" className='logo'>
+              <img
+                width={32}
+                height={32}
+                src="/logo.png"
+                alt="citybreak.pro - Find a cheap city break"
+              />
 
-            <span>citybreak.pro</span>
-          </Link>
-        </div>
-        <div className='page-right'>
+              <span>citybreak.pro</span>
+            </Link>
+          </div>
+          <div className='page-right'>
 
+          </div>
         </div>
       </div>
 

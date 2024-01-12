@@ -5,6 +5,8 @@
 }
 
 html {
+  margin: 0;
+  padding: 0;
   font-size: 14px;
   text-rendering: geometricPrecision;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -16,11 +18,9 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  background-color: var(--background);
 }
 
 body {
-  color: var(--white);
   font-family: var(--font-primary);
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -133,7 +133,6 @@ textarea {
 }
 
 a {
-  color: var(--white);
   text-decoration: none;
 }
 
@@ -202,8 +201,8 @@ code {
   max-width: 1180px;
   display: flex;
   flex-direction: row;
-  margin: 20px auto;
-  padding: 0 20px;
+  margin: auto;
+  padding: 0px;
 }
 
 .page-left {
@@ -212,6 +211,11 @@ code {
 
 .page-right {
   flex: 1
+}
+
+.nav {
+  background-color: var(--background);
+  padding: 20px 0;
 }
 
 .logo img {
@@ -229,6 +233,7 @@ code {
   padding: 7px;
   border-radius: 3px;
   margin: 0 7px;
+  color: var(--white);
 }
 
 .logo span:hover {

@@ -1,4 +1,4 @@
-import { letsGo } from "../_extra.js"
+import _scrape from "./_scrape.js"
 
 export const config = {
     runtime: 'edge',
@@ -11,7 +11,7 @@ export default async function handler(request) {
     const dayFrom = query.dayFrom ? parseInt(query.dayFrom) : 6
     const dayTo = query.dayFrom ? parseInt(query.dayTo) : 7
 
-    const flightsAdded = await letsGo(dayFrom, dayTo);
+    const flightsAdded = await _scrape(dayFrom, dayTo);
 
     return new Response(
         JSON.stringify(flightsAdded),
