@@ -6,126 +6,78 @@ const overview = {
         "Yerevan"
     ],
     "Austria": [
-        "Graz",
+        "Vienna",
         "Innsbruck",
-        "Klagenfurt",
-        "Salzburg",
-        "Vienna"
-    ],
-    "Azerbaijan": [
-        "Baku"
+        "Salzburg"
     ],
     "Belgium": [
         "Brussels"
     ],
     "Bosnia & Herzegovina": [
-        "Sarajevo",
-        "Banja Luka"
+        "Sarajevo"
     ],
     "Bulgaria": [
-        "Burgas",
         "Sofia",
         "Varna"
     ],
     "Croatia": [
-        "Dubrovnik",
-        "Pula",
-        "Rijeka",
-        "Split",
         "Zadar",
-        "Zagreb"
+        "Zagreb",
+        "Pula"
     ],
     "Cyprus": [
-        "Larnaca",
-        "Paphos"
+        "Larnaca"
     ],
     "Czechia": [
         "Prague"
     ],
     "Denmark": [
-        "Aalborg",
-        "Aarhus",
-        "Billund",
-        "Copenhagen",
-        "Bornholm"
+        "Copenhagen"
     ],
     "Estonia": [
         "Tallinn"
     ],
-    "Faroe Islands": [
-        "Sørvágur"
-    ],
     "Finland": [
         "Helsinki",
-        "Kittilä",
-        "Oulu",
-        "Rovaniemi",
-        "Tampere",
-        "Turku",
-        "Vaasa"
+        "Turku"
     ],
     "France": [
-        "Ajaccio",
-        "Bastia",
-        "Biarritz",
-        "Bordeaux",
-        "Brest",
-        "Figari",
-        "Lille",
-        "Lyon",
-        "Marseille",
-        "Montpellier",
-        "Nantes",
         "Nice",
         "Paris",
-        "Rennes",
-        "Strasbourg",
-        "Toulon",
+        "Lyon",
+        "Marseille",
+        "Bordeaux",
         "Toulouse",
-        "Caen"
+        "Nantes",
+        "Lille",
+        "Strasbourg",
+        "Montpellier"
     ],
     "Georgia": [
-        "Kutaisi",
-        "Tbilisi"
+        "Kutaisi"
     ],
     "Germany": [
         "Berlin",
-        "Bremen",
-        "Cologne",
         "Dortmund",
-        "Dresden",
-        "Düsseldorf",
-        "Frankfurt",
-        "Friedrichshafen",
-        "Hamburg",
-        "Hanover",
-        "Karlsruhe",
-        "Leipzig",
         "Memmingen",
+        "Hamburg",
         "Munich",
-        "Münster",
-        "Nuremberg",
-        "Paderborn",
         "Stuttgart",
-        "Saarbrücken"
+        "Bremen",
+        "Frankfurt",
+        "Düsseldorf"
     ],
     "Greece": [
         "Athens",
-        "Cephalonia",
-        "Chania",
-        "Corfu",
+        "Thessaloniki",
         "Heraklion",
-        "Kos",
-        "Mykonos",
         "Mytilene",
         "Rhodes",
-        "Samos",
+        "Kos",
         "Santorini",
-        "Skiathos",
-        "Thessaloniki",
-        "Zakynthos Island",
-        "Chios",
-        "Kastellorizo"
+        "Chania",
+        "Corfu",
+        "Samos"
     ],
     "Hungary": [
         "Budapest",
@@ -135,57 +87,38 @@ const overview = {
         "Reykjavik"
     ],
     "Ireland": [
-        "Cork",
-        "Dublin",
-        "Knock, County Mayo",
-        "Shannon, County Clare"
+        "Dublin"
     ],
     "Italy": [
-        "Alghero",
-        "Ancona",
-        "Bari",
-        "Bologna",
-        "Brindisi",
-        "Cagliari",
-        "Catania",
-        "Comiso",
-        "Florence",
-        "Genoa",
-        "Lamezia Terme",
-        "Milan",
-        "Naples",
-        "Olbia",
-        "Palermo",
-        "Perugia",
-        "Pescara",
-        "Pisa",
         "Rome",
-        "Trapani",
-        "Trieste",
-        "Turin",
+        "Catania",
+        "Milan",
+        "Palermo",
         "Venice",
+        "Naples",
+        "Bologna",
+        "Olbia",
+        "Bari",
+        "Pisa",
+        "Turin",
         "Verona",
-        "Lampedusa",
-        "Pantelleria",
-        "Reggio Calabria"
+        "Trapani",
+        "Cagliari",
+        "Lamezia Terme",
+        "Ancona",
+        "Pescara",
+        "Comiso",
+        "Brindisi",
+        "Genoa",
+        "Alghero",
+        "Florence"
     ],
     "Jersey": [
         "Saint Helier"
     ],
     "Kazakhstan": [
         "Almaty",
-        "Astana",
-        "Aktau",
-        "Aktobe",
-        "Atyrau",
-        "Karaganda",
-        "Kostanay",
-        "Kyzylorda",
-        "Oskemen",
-        "Pavlodar",
-        "Petropavl",
-        "Semey",
-        "Shymkent"
+        "Astana"
     ],
     "Kosovo": [
         "Pristina"
@@ -194,8 +127,8 @@ const overview = {
         "Riga"
     ],
     "Lithuania": [
-        "Kaunas",
-        "Vilnius"
+        "Vilnius",
+        "Kaunas"
     ],
     "Luxembourg": [
         "Luxembourg"
@@ -203,12 +136,8 @@ const overview = {
     "Malta": [
         "Malta"
     ],
-    "Moldova": [
-        "Chișinău"
-    ],
     "Montenegro": [
-        "Podgorica",
-        "Tivat"
+        "Podgorica"
     ],
     "Netherlands": [
         "Amsterdam",
@@ -217,45 +146,30 @@ const overview = {
     ],
     "Norway": [
         "Bergen",
-        "Bodø",
-        "Haugesund",
+        "Stavanger",
         "Kristiansand",
         "Oslo",
-        "Stavanger",
         "Tromsø",
+        "Haugesund",
         "Trondheim",
         "Ålesund",
-        "Alta",
-        "Andenes",
-        "Hammerfest",
-        "Kirkenes",
-        "Leknes",
-        "Mo i Rana",
-        "Narvik",
-        "Stokmarknes",
-        "Svolvær"
+        "Bodø"
     ],
     "Poland": [
-        "Gdańsk",
-        "Katowice",
-        "Kraków",
-        "Poznań",
-        "Szczecin",
         "Warsaw",
+        "Gdańsk",
+        "Kraków",
         "Wrocław",
-        "Lublin"
+        "Katowice",
+        "Poznań",
+        "Szczecin"
     ],
     "Portugal": [
-        "Faro",
-        "Funchal",
         "Lisbon",
-        "Ponta Delgada",
         "Porto",
-        "Horta, Azores",
-        "Pico Island",
-        "Santa Maria Island",
-        "Terceira Island",
-        "Vila Baleira"
+        "Funchal",
+        "Ponta Delgada",
+        "Faro"
     ],
     "Republic of North Macedonia": [
         "Skopje"
@@ -265,8 +179,7 @@ const overview = {
         "Cluj-Napoca",
         "Iași",
         "Sibiu",
-        "Timișoara",
-        "Brasov"
+        "Timișoara"
     ],
     "Serbia": [
         "Belgrade",
@@ -280,149 +193,65 @@ const overview = {
         "Ljubljana"
     ],
     "Spain": [
-        "Alicante",
-        "Almería",
-        "Asturias",
-        "Barcelona",
-        "Bilbao",
-        "Fuerteventura",
-        "Girona",
-        "Granada",
-        "Ibiza",
-        "Jerez de la Frontera",
-        "Lanzarote",
-        "Las Palmas",
         "Madrid",
-        "Menorca",
-        "Murcia",
-        "Málaga",
+        "Barcelona",
         "Palma, Majorca",
-        "Santa Cruz de La Palma",
-        "Santander",
-        "Santiago de Compostela",
+        "Málaga",
         "Seville",
+        "Ibiza",
+        "Santa Cruz de La Palma",
+        "Las Palmas",
         "Tenerife",
+        "Alicante",
         "Valencia",
-        "Zaragoza",
-        "A Coruña",
-        "Melilla",
-        "San Sebastián de La Gomera",
-        "Valverde",
-        "Vigo"
+        "Bilbao",
+        "Asturias",
+        "Menorca",
+        "Lanzarote",
+        "Granada",
+        "Santiago de Compostela",
+        "Fuerteventura",
+        "Santander",
+        "Almería",
+        "Jerez de la Frontera",
+        "Zaragoza"
     ],
     "Sweden": [
-        "Gothenburg",
-        "Malmö",
         "Stockholm",
-        "Kiruna",
-        "Luleå",
-        "Umeå"
+        "Malmö",
+        "Gothenburg"
     ],
     "Switzerland": [
-        "Basel",
         "Geneva",
+        "Basel",
         "Zürich"
     ],
     "Turkey": [
-        "Adana",
-        "Ankara",
         "Antalya",
-        "Bodrum",
-        "Dalaman",
-        "Istanbul",
-        "Trabzon",
         "İzmir",
-        "Diyarbakır",
-        "Erzurum",
-        "Gaziantep",
-        "Giresun",
-        "Kars",
-        "Kayseri",
-        "Konya",
-        "Mardin",
-        "Nevşehir",
-        "Rize",
-        "Samsun",
-        "Van",
-        "Şanlıurfa"
+        "Istanbul",
+        "Ankara",
+        "Adana",
+        "Trabzon",
+        "Bodrum",
+        "Dalaman"
     ],
     "United Kingdom": [
-        "Aberdeen",
         "Belfast",
-        "Birmingham",
-        "Bristol",
-        "Cardiff",
         "Edinburgh",
-        "Exeter",
-        "Glasgow",
-        "Leeds",
-        "Liverpool",
-        "London",
         "Manchester",
+        "London",
+        "Birmingham",
+        "Glasgow",
+        "Liverpool",
+        "Bristol",
         "Newcastle upon Tyne",
-        "Nottingham",
         "Southampton",
-        "Inverness",
-        "Newquay",
-        "Wick"
-    ],
-    "Algeria": [
-        "Algiers",
-        "Constantine",
-        "Oran"
-    ],
-    "Andorra": [
-        "Andorra la Vella"
-    ],
-    "Egypt": [
-        "Cairo",
-        "Hurghada"
-    ],
-    "Guernsey": [
-        "Saint Peter Port"
-    ],
-    "Iran": [
-        "Tehran"
-    ],
-    "Iraq": [
-        "Erbil"
-    ],
-    "Isle of Man": [
-        "Douglas"
-    ],
-    "Israel": [
-        "Tel Aviv"
-    ],
-    "Jordan": [
-        "Amman"
-    ],
-    "Kuwait": [
-        "Kuwait City"
-    ],
-    "Kyrgyzstan": [
-        "Bishkek"
-    ],
-    "Lebanon": [
-        "Beirut"
-    ],
-    "Morocco": [
-        "Casablanca",
-        "Fes",
-        "Marrakesh",
-        "Nador",
-        "Oujda",
-        "Tangier"
-    ],
-    "Svalbard & Jan Mayen": [
-        "Longyearbyen"
-    ],
-    "Tunisia": [
-        "Djerba",
-        "Monastir",
-        "Tunis"
-    ],
-    "Uzbekistan": [
-        "Tashkent"
+        "Nottingham",
+        "Leeds",
+        "Exeter",
+        "Aberdeen",
+        "Cardiff"
     ]
 }
 

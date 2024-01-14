@@ -28,21 +28,23 @@ export default function Home() {
   }
 
   return (
-    <div className='page'>
+    <div className='page page-cities'>
       {Object.entries(overview).map((item, countryIndex) => (
-        <div key={countryIndex}>
-          <h5>{item[0]}</h5>
-          {item[1].map((city, cityIndex) => {
-            const href = `/flights/${slugify(item[0])}/${slugify(city)}`
+        <div className='country-cities' key={countryIndex}>
+          <h5 className='country-name'>{item[0]}</h5>
+          <div className='grid-cards'>
+            {item[1].map((city, cityIndex) => {
+              const path = `${slugify(item[0])}/${slugify(city)}`
+              const href = encodeURI(`/flights/${path}`)
 
-            return (
-              <div key={`${countryIndex}-${cityIndex}`}>
-                <Link href={href}>
-                  <div>{city}</div>
+              return (
+                <Link className='card' href={href} key={`${countryIndex}-${cityIndex}`}>
+                  <div className='city-from'>{city}</div>
+                  <img src={encodeURI(`/cities/${path}.jpg`)} alt={`${city}, ${item[0]} | citybreak.pro`} />
                 </Link>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
       ))}
     </div>
