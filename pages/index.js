@@ -1,5 +1,8 @@
 import React from 'react';
 import useLocalStorage from '../utils/useLocalStorage';
+import getOverview from '../utils/getOverview';
+import {slugify} from '../utils/slugify';
+
 import Link from 'next/link';
 
 export default function Home({ overview }) {
@@ -24,18 +27,21 @@ export default function Home({ overview }) {
     return <BrandedOverlay />
   }
 
+ console.log(overview)
+
   return (
     <div className='page'>
       {Object.entries(overview).map((item, countryIndex) => (
         <div key={countryIndex}>
           <h5>{item[0]}</h5>
-          {item[1].map((city, cityIndex) => {
-            const href = `/flights/${encodeURIComponent(item[0])}/${encodeURIComponent(city)}`
+          {Object.entries(item[1]).map((city, cityIndex) => {
+            const href = `/flights/${slugify(item[0])}/${slugify(city[0])}`
 
             return (
-              <div key={cityIndex}>
+              <div key={`${countryIndex}-${cityIndex}`}>
                 <Link href={href}>
-                  {city}
+                 <div>{city[0]}</div>
+                 <div>{city[1]}</div>
                 </Link>
               </div>
             )
@@ -47,7 +53,7 @@ export default function Home({ overview }) {
 }
 
 export async function getServerSideProps() {
-  const overview = await getOverview()
+  const overview = getOverview()
 
   return { props: { overview } }
 }
@@ -78,7 +84,7 @@ const getIpInfo = () => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
-const getOverview = () => new Promise((resolve, reject) => {
+const getOverviewApi = () => new Promise((resolve, reject) => {
   fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/get-overview`, { next: { revalidate: 60 } })
     .then((response) => response.json())
     .then((data) => {
