@@ -1,7 +1,8 @@
 import React from 'react';
 import useLocalStorage from '../utils/useLocalStorage';
+import Link from 'next/link';
 
-export default function Home({ flights }) {
+export default function Home({ overview }) {
   const [isReady, setIsReady] = React.useState(false);
   const [ipInfo, setIpInfo] = useLocalStorage('ipInfo', {});
 
@@ -25,22 +26,30 @@ export default function Home({ flights }) {
 
   return (
     <div className='page'>
-      <div className='page-left'>
-        {flights.map((o, i) => (
-          <div key={i}>{o[0]} ({o[1]})</div>
-        ))}
-      </div>
-      <div className='page-right'>
-        Right
-      </div>
+      {Object.entries(overview).map((item, countryIndex) => (
+        <div key={countryIndex}>
+          <h5>{item[0]}</h5>
+          {item[1].map((city, cityIndex) => {
+            const href = `/flights/${encodeURIComponent(item[0])}/${encodeURIComponent(city)}`
+
+            return (
+              <div key={cityIndex}>
+                <Link href={href}>
+                  {city}
+                </Link>
+              </div>
+            )
+          })}
+        </div>
+      ))}
     </div>
   )
 }
 
 export async function getServerSideProps() {
-  const flights = await fetchFlights()
+  const overview = await getOverview()
 
-  return { props: { flights } }
+  return { props: { overview } }
 }
 
 const BrandedOverlay = () => {
@@ -69,20 +78,34 @@ const getIpInfo = () => new Promise((resolve, reject) => {
     .catch((err) => reject(err));
 });
 
-const fetchFlights = () => new Promise((resolve, reject) => {
-  fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 60 } })
+const getOverview = () => new Promise((resolve, reject) => {
+  fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/get-overview`, { next: { revalidate: 60 } })
     .then((response) => response.json())
     .then((data) => {
-      if (!data.error) {
-        const newObj = {};
-        for (const flight of data) {
-          if (!newObj[flight['country_from']]) newObj[flight['country_from']] = []
-          newObj[flight['country_from']].push(flight)
-        }
-        resolve(Object.entries(newObj).sort((a, b) => b[1].length - a[1].length).map(o => ({ 0: o[0], 1: o[1].length })));
-      } else {
-        reject(new Error(data.error));
+      const newObj = {};
+      for (const row of data) {
+        if (!newObj[row['country_from']]) newObj[row['country_from']] = []
+        newObj[row['country_from']].push(row['flight1_city_from'])
       }
+      resolve(newObj);
     })
     .catch((err) => reject(err));
 });
+
+// const fetchFlights = () => new Promise((resolve, reject) => {
+//   fetch(`${process.env.NEXT_PUBLIC_PUBLIC_BASE_URL}/api/fetch-flights`, { next: { revalidate: 60 } })
+//     .then((response) => response.json())
+//     .then((data) => {
+//       if (!data.error) {
+//         const newObj = {};
+//         for (const flight of data) {
+//           if (!newObj[flight['country_from']]) newObj[flight['country_from']] = []
+//           newObj[flight['country_from']].push(flight)
+//         }
+//         resolve(Object.entries(newObj).sort((a, b) => b[1].length - a[1].length).map(o => ({ 0: o[0], 1: o[1].length })));
+//       } else {
+//         reject(new Error(data.error));
+//       }
+//     })
+//     .catch((err) => reject(err));
+// });
