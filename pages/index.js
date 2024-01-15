@@ -11,8 +11,6 @@ export default function Home() {
 
   React.useEffect(() => {
     setTimeout(() => setIsReady(true), 1250);
-
-    // new Sticksy('.js-sticky-widget');
   }, []);
 
   React.useEffect(() => {
@@ -33,14 +31,14 @@ export default function Home() {
         <div className='country-cities' key={countryIndex}>
           <h5 className='country-name'>{item[0]}</h5>
           <div className='grid-cards'>
-            {item[1].map((city, cityIndex) => {
-              const path = `${slugify(item[0])}/${slugify(city)}`
+            {Object.entries(item[1]).map((city, cityIndex) => {
+              const path = `${slugify(item[0])}/${slugify(city[0])}`
               const href = encodeURI(`/flights/${path}`)
 
               return (
                 <Link className='card' href={href} key={`${countryIndex}-${cityIndex}`}>
-                  <div className='city-from'>{city}</div>
-                  <img src={encodeURI(`/cities/${path}.jpg`)} alt={`${city}, ${item[0]} | citybreak.pro`} />
+                  <div className='city-from'>{city[0]}</div>
+                  <img src={encodeURI(`/cities/${path}.jpg`)} alt={`${city[0]}, ${item[0]} | citybreak.pro`} />
                 </Link>
               )
             })}
